@@ -426,8 +426,8 @@ export class ComponentNormalizer extends BaseJsonNormalizer<Models.Component> {
       properties: spec.supportsProperties(data) && data.properties.size > 0
         ? this._factory.makeForProperty().normalizeIterable(data.properties, options)
         : undefined,
-      tags: spec.supportsComponentTags && data.tags !== undefined && data.tags.length > 0
-        ? data.tags
+      tags: spec.supportsComponentTags && data.tags.size > 0
+        ? normalizeStringableIter(data.tags, options)
         : undefined,
       components: data.components.size > 0
         ? this.normalizeIterable(data.components, options)

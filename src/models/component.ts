@@ -18,7 +18,7 @@ Copyright (c) OWASP Foundation. All Rights Reserved.
 */
 
 import type { Comparable } from '../_helpers/sortable'
-import { SortableComparables } from '../_helpers/sortable'
+import { SortableComparables, SortableStringables } from '../_helpers/sortable'
 import { treeIteratorSymbol } from '../_helpers/tree'
 import type { ComponentScope, ComponentType } from '../enums'
 import type { CPE } from '../types/cpe'
@@ -71,7 +71,7 @@ export class Component implements Comparable<Component> {
   purl?: string
   scope?: ComponentScope
   supplier?: OrganizationalEntity
-  tags?: string[]
+  tags: Set<string>
   swid?: SWID
   version?: string
   components: ComponentRepository
@@ -94,7 +94,7 @@ export class Component implements Comparable<Component> {
     this.type = type
     this.name = name
     this.supplier = op.supplier
-    this.tags = op.tags
+    this.tags = op.tags ?? new Set()
     this.author = op.author
     this.copyright = op.copyright
     this.externalReferences = op.externalReferences ?? new ExternalReferenceRepository()
@@ -148,7 +148,8 @@ export class Component implements Comparable<Component> {
     /* eslint-disable @typescript-eslint/strict-boolean-expressions -- run compares in weighted order */
     return (this.group ?? '').localeCompare(other.group ?? '') ||
       this.name.localeCompare(other.name) ||
-      (this.version ?? '').localeCompare(other.version ?? '')
+      (this.version ?? '').localeCompare(other.version ?? '') ||
+      new SortableStringables(this.tags).compare(new SortableStringables(other.tags))
     /* eslint-enable  @typescript-eslint/strict-boolean-expressions */
   }
 }

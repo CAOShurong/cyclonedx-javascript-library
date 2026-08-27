@@ -138,6 +138,7 @@ export class ComponentBuilder {
     const properties = new PropertyRepository(
       this.#makeEngineProperties(data.engines)
     )
+    const tags = new Set(this.#makeTags(data.keywords))
 
     return new Component(type, name, {
       author,
@@ -146,11 +147,7 @@ export class ComponentBuilder {
       group,
       licenses,
       properties,
-      tags: typeof data.keywords === 'string'
-        ? [data.keywords]
-        : (Array.isArray(data.keywords)
-          ? data.keywords.filter((k): k is string => typeof k === 'string')
-          : undefined),
+      tags,
       version
     })
   }
@@ -177,6 +174,15 @@ export class ComponentBuilder {
       yield new Property(
         `cdx:npm:package:constraint:engine:${engine}`,
         constraint)
+    }
+  }
+
+  * #makeTags (keywords: NodePackageJson['keywords']): Generator<string> {
+    if (!Array.isArray(keywords)) return
+    for (const keyword of keywords) {
+      if (typeof keyword === 'string') {
+        yield keyword
+      }
     }
   }
 
