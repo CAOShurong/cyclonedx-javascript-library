@@ -132,11 +132,20 @@ export namespace Normalized {
     phone?: string
   }
 
+  export interface PostalAddress {
+    country?: string
+    region?: string
+    locality?: string
+    postOfficeBoxNumber?: string
+    postalCode?: string
+    streetAddress?: string
+  }
+
   export interface OrganizationalEntity {
     name?: string
+    address?: PostalAddress
     url?: JsonSchema.IriReference[]
     contact?: OrganizationalContact[]
-    address?: OrganizationalContact
   }
 
   export interface Hash {
